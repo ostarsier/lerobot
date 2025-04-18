@@ -13,16 +13,9 @@ from lerobot.common.robot_devices.motors.dynamixel import TorqueMode
 from lerobot.common.robot_devices.robots.configs import So100RobotConfig
 from lerobot.common.robot_devices.robots.utils import make_robot_from_config
 from lerobot.common.robot_devices.utils import RobotDeviceAlreadyConnectedError
-
-# NOTE:
-# Sometimes we would like to abstract different env, or run this on a separate machine
-# User can just move this single python class method gr00t/eval/service.py
-# to their code or do the following line below
-# sys.path.append(os.path.expanduser("~/Isaac-GR00T/gr00t/eval/"))
-from service import ExternalRobotInferenceClient
-
 # Import tqdm for progress bar
 from tqdm import tqdm
+from openpi_client import websocket_client_policy as _websocket_client_policy
 
 
 
@@ -186,40 +179,30 @@ class SO100Robot:
 
 
 
-class Gr00tRobotInferenceClient:
+class pi0InferenceClient:
     def __init__(
         self,
-        host="localhost",
-        port=5555,
-        language_instruction="Pick up the fruits and place them on the plate.",
+        host="0.0.0.0",
+        port=8000,
+        language_instruction="Pick up the blocks and place them on the plate.",
     ):
         self.language_instruction = language_instruction
         # 480, 640
         self.img_size = (480, 640)
-        self.policy = ExternalRobotInferenceClient(host=host, port=port)
+        self.policy = _websocket_client_policy.WebsocketClientPolicy(host=args.host, port=args.port,)
+
 
     def get_action(self, img, state):
         obs_dict = {
-            "video.webcam": img[np.newaxis, :, :, :],
-            "state.single_arm": state[:5][np.newaxis, :].astype(np.float64),
-            "state.gripper": state[5:6][np.newaxis, :].astype(np.float64),
-            "annotation.human.action.task_description": [self.language_instruction],
+            "observation/exterior_image_1_left": img[np.newaxis, :, :, :],
+            "observation/joint_position": state[:5][np.newaxis, :].astype(np.float64),
+            "observation/gripper_position": state[5:6][np.newaxis, :].astype(np.float64),
+            "prompt": [self.language_instruction],
         }
         start_time = time.time()
-        res = self.policy.get_action(obs_dict)
+        res = self.policy.infer(obs_dict)
         print("Inference query time taken", time.time() - start_time)
         return res
-
-    def sample_action(self):
-        obs_dict = {
-            "video.webcam": np.zeros((1, self.img_size[0], self.img_size[1], 3), dtype=np.uint8),
-            "state.single_arm": np.zeros((1, 5)),
-            "state.gripper": np.zeros((1, 1)),
-            "annotation.human.action.task_description": [self.language_instruction],
-        }
-        return self.policy.get_action(obs_dict)
-
-
 
 
 def view_img(img, img2=None):
@@ -242,23 +225,23 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default="localhost")
-    parser.add_argument("--port", type=int, default=5555)
-    parser.add_argument("--action_horizon", type=int, default=16)
+    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--action_horizon", type=int, default=10)
     parser.add_argument("--actions_to_execute", type=int, default=350)
     parser.add_argument("--camera_index", type=int, default=0)
     args = parser.parse_args()
 
     ACTIONS_TO_EXECUTE = args.actions_to_execute
     ACTION_HORIZON = args.action_horizon
-    MODALITY_KEYS = ["single_arm", "gripper"]
 
-    client = Gr00tRobotInferenceClient(
+    client = pi0InferenceClient(
         host=args.host,
         port=args.port,
         language_instruction="Pick up the blocks and place them on the plate.",
     )
 
     robot = SO100Robot(calibrate=False, enable_camera=True, camera_index=args.camera_index)
+
     with robot.activate():
         for i in tqdm(range(ACTIONS_TO_EXECUTE), desc="Executing actions"):
             img = robot.get_current_img()
@@ -267,12 +250,7 @@ if __name__ == "__main__":
             action = client.get_action(img, state)
             start_time = time.time()
             for i in range(ACTION_HORIZON):
-                concat_action = np.concatenate(
-                    [np.atleast_1d(action[f"action.{key}"][i]) for key in MODALITY_KEYS],
-                    axis=0,
-                )
-                assert concat_action.shape == (6,), concat_action.shape
-                robot.set_target_state(torch.from_numpy(concat_action))
+                robot.set_target_state(torch.from_numpy(action))
                 time.sleep(0.01)
 
                 # get the realtime image

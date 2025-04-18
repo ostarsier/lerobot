@@ -1,5 +1,9 @@
 
 
+#autodl
+ssh -p 50979 root@connect.bjc1.seetacloud.com
+
+scp /path/to/your/local_file.txt root@connect.bjc1.seetacloud.com:/root -P 50979
 
 
 # merge
@@ -35,20 +39,43 @@ python lerobot/scripts/control_robot.py \
 --control.episode=0
 
 
-# train
-python lerobot/scripts/train.py \
-  --dataset.repo_id=${HF_USER}/so100_blue \
-  --policy.type=pi0fast \
-  --output_dir=outputs/train/pi0fast_so100_blue_003 \
-  --job_name=pi0fast_so100_blue \
-  --policy.device=cuda \
-  --wandb.enable=false
-    
+
 # visualize
 # ~/.cache/huggingface/lerobot/shelbin/
 python lerobot/scripts/visualize_dataset_html.py \
   --repo-id ${HF_USER}/blocks2plate
 
+
+# train
+nohup python lerobot/scripts/train.py \
+  --dataset.repo_id=${HF_USER}/box_002 \
+  --policy.type=pi0fast \
+  --output_dir=/root/autodl-fs/models/box_002_02 \
+  --job_name=pi0fast_box_002 \
+  --policy.device=cuda \
+  --wandb.enable=true \
+  --dataset.image_transforms.enable=true
+  
+  > /root/autodl-fs/models/box_002/train.log 2>&1 &
+
+
+# eval
+python lerobot/scripts/control_robot.py \
+  --robot.type=so100 \
+  --control.type=record \
+  --control.fps=30 \
+  --control.single_task="Pick up the blocks and place them on the plate." \
+  --control.repo_id=${HF_USER}/eval_box_5672 \
+  --control.tags='["tutorial"]' \
+  --control.warmup_time_s=5 \
+  --control.episode_time_s=30 \
+  --control.reset_time_s=30 \
+  --control.num_episodes=10 \
+  --control.push_to_hub=false \
+  --control.policy.path=lerobot/pi0fast_base
+
+
+  
 
 
 

@@ -26,6 +26,7 @@ from lerobot.common.robot_devices.cameras.configs import (
 from lerobot.common.robot_devices.motors.configs import (
     DynamixelMotorsBusConfig,
     FeetechMotorsBusConfig,
+    ShelbinMotorsBusConfig,
     MotorsBusConfig,
 )
 
@@ -614,3 +615,73 @@ class LeKiwiRobotConfig(RobotConfig):
     )
 
     mock: bool = False
+
+
+
+
+
+@RobotConfig.register_subclass("shelbin")
+@dataclass
+class ShelbinRobotConfig(ManipulatorRobotConfig):
+    calibration_dir: str = ".cache/calibration/so100"
+    # `max_relative_target` limits the magnitude of the relative positional target vector for safety purposes.
+    # Set this to a positive scalar to have the same value for all motors, or a list that is the same length as
+    # the number of motors in your follower arms.
+
+    # `max_relative_target` 出于安全考虑，限制了相对位置目标向量的大小。
+    # 将此设置为一个正标量，可对所有电机使用相同的值；或者设置为一个列表，该列表的长度应与你的跟随臂中的电机数量相同。
+    max_relative_target: int | None = None
+    leader_arms: dict[str, MotorsBusConfig] = field(
+        default_factory=lambda: {
+            "main": ShelbinMotorsBusConfig(
+                port="/dev/ttyACM0",
+                motors={
+                    # name: (index, model)
+                    "shoulder_pan": [1, "sts3215"],
+                    "shoulder_lift": [2, "sts3215"],
+                    "elbow_flex": [3, "sts3215"],
+                    "wrist_flex": [4, "sts3215"],
+                    "wrist_roll": [5, "sts3215"],
+                    "gripper": [6, "sts3215"],
+                },
+            ),
+        }
+    )
+
+    follower_arms: dict[str, MotorsBusConfig] = field(
+        default_factory=lambda: {
+            "main": ShelbinMotorsBusConfig(
+                port="/dev/ttyACM1",
+                motors={
+                    # name: (index, model)
+                    "shoulder_pan": [1, "sts3215"],
+                    "shoulder_lift": [2, "sts3215"],
+                    "elbow_flex": [3, "sts3215"],
+                    "wrist_flex": [4, "sts3215"],
+                    "wrist_roll": [5, "sts3215"],
+                    "gripper": [6, "sts3215"],
+                },
+            ),
+        }
+    )
+
+    cameras: dict[str, CameraConfig] = field(
+        default_factory=lambda: {
+            "top": OpenCVCameraConfig(
+                camera_index=0,
+                fps=30,
+                width=640,
+                height=480,
+            ),
+            "arm": OpenCVCameraConfig(
+                camera_index=2,
+                fps=30,
+                width=640,
+                height=480,
+            ),
+        }
+    )
+
+    mock: bool = False
+
+

@@ -166,3 +166,14 @@ export PKG_CONFIG_PATH="/media/yons/843b68f6-dfaf-466a-871e-769728918988/conda_e
             --extra-ldflags="-L/media/yons/843b68f6-dfaf-466a-871e-769728918988/conda_envs/lerobot/lib"
 
 
+python lerobot/scripts/control_robot.py \
+  --robot.type=shelbin \
+  --control.type=record \
+  --control.fps=30 \
+  --control.single_task="Pick up the block and place it on the plate." \
+  --control.repo_id=${HF_USER}/test \
+  --control.warmup_time_s=5 \
+  --control.episode_time_s=60 \
+  --control.reset_time_s=5 \
+  --control.num_episodes=20 \
+  --control.push_to_hub=false 

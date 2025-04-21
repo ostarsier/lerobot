@@ -245,6 +245,8 @@ class ManipulatorRobot:
             from lerobot.common.robot_devices.motors.dynamixel import TorqueMode
         elif self.robot_type in ["so100", "moss", "lekiwi"]:
             from lerobot.common.robot_devices.motors.feetech import TorqueMode
+        elif self.robot_type in ["shelbin"]:
+            from lerobot.common.robot_devices.motors.shelbin import TorqueMode
 
         # We assume that at connection time, arms are in a rest position, and torque can
         # be safely disabled to run calibration and/or set robot preset configurations.

@@ -22,6 +22,7 @@ from lerobot.common.robot_devices.cameras.configs import (
     CameraConfig,
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
+    ShelbinCameraConfig,
 )
 from lerobot.common.robot_devices.motors.configs import (
     DynamixelMotorsBusConfig,
@@ -667,13 +668,13 @@ class ShelbinRobotConfig(ManipulatorRobotConfig):
 
     cameras: dict[str, CameraConfig] = field(
         default_factory=lambda: {
-            "top": OpenCVCameraConfig(
+            "top": ShelbinCameraConfig(
                 camera_index=0,
                 fps=30,
                 width=640,
                 height=480,
             ),
-            "arm": OpenCVCameraConfig(
+            "arm": ShelbinCameraConfig(
                 camera_index=2,
                 fps=30,
                 width=640,

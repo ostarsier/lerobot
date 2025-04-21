@@ -21,6 +21,7 @@ from lerobot.common.robot_devices.cameras.configs import (
     IntelRealSenseCameraConfig,
     OpenCVCameraConfig,
 )
+from lerobot.common.robot_devices.cameras.shelbin import ShelbinCamera
 
 
 # Defines a camera type
@@ -44,6 +45,11 @@ def make_cameras_from_configs(camera_configs: dict[str, CameraConfig]) -> list[C
             from lerobot.common.robot_devices.cameras.intelrealsense import IntelRealSenseCamera
 
             cameras[key] = IntelRealSenseCamera(cfg)
+
+        elif cfg.type == "shelbin":
+            from lerobot.common.robot_devices.cameras.shelbin import ShelbinCamera
+
+            cameras[key] = ShelbinCamera(cfg)
         else:
             raise ValueError(f"The camera type '{cfg.type}' is not valid.")
 

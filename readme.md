@@ -17,7 +17,7 @@ python lerobot/scripts/control_robot.py \
   --control.type=record \
   --control.fps=30 \
   --control.single_task="Pick up the block and place it on the plate." \
-  --control.repo_id=${HF_USER}/act_005 \
+  --control.repo_id=${HF_USER}/act_008 \
   --control.tags='["act_001"]' \
   --control.warmup_time_s=5 \
   --control.episode_time_s=60 \

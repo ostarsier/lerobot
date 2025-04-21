@@ -38,6 +38,7 @@ from lerobot.common.policies.pretrained import PreTrainedPolicy
 from lerobot.common.robot_devices.robots.utils import Robot
 from lerobot.common.robot_devices.utils import busy_wait
 from lerobot.common.utils.utils import get_safe_torch_device, has_method
+from lerobot.common.utils.thread_utils import local_data
 
 
 def log_control_info(robot: Robot, dt_s, episode_index=None, frame_index=None, fps=None):
@@ -260,7 +261,7 @@ def control_loop(
             observation, action = robot.teleop_step(record_data=True)
         else:
             observation = robot.capture_observation()
-
+            local_data.value = single_task
             if policy is not None:
                 pred_action = predict_action(
                     observation, policy, get_safe_torch_device(policy.config.device), policy.config.use_amp

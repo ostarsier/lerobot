@@ -60,6 +60,7 @@ from lerobot.common.constants import ACTION, OBS_ROBOT
 from lerobot.common.policies.normalize import Normalize, Unnormalize
 from lerobot.common.policies.pi0fast.configuration_pi0fast import PI0FASTConfig
 from lerobot.common.policies.pretrained import PreTrainedPolicy
+from lerobot.common.utils.thread_utils import local_data
 
 PRECISION = {
     "float16": torch.float16,
@@ -849,7 +850,7 @@ class PI0FAST(nn.Module):
         # TODO: keep like this or move to the policy .forward
         images, img_masks = self.prepare_images(batch)
 
-        padded_outs = self.create_input_tokens(state=batch[OBS_ROBOT], lang_text=batch["task"], actions=None)
+        padded_outs = self.create_input_tokens(state=batch[OBS_ROBOT], lang_text=local_data.value, actions=None)
         embs, pad_masks, att_masks2, targets, loss_mask, token_type_ids = self.embed_inputs(
             images,
             img_masks,

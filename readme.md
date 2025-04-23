@@ -1,29 +1,26 @@
-
-
-#autodl
-ssh -p 50979 root@connect.bjc1.seetacloud.com
-sGYgG9KEhM7q
-scp /path/to/your/local_file.txt root@connect.bjc1.seetacloud.com:/root -P 50979
+ssh -p 50673 root@connect.bjc1.seetacloud.com
+ybwIqZbQoO19
 
 
 # merge
-python lerobot/scripts/merge.py --sources ~/.cache/huggingface/lerobot/shelbin/act_001 ~/.cache/huggingface/lerobot/shelbin/act_002 ~/.cache/huggingface/lerobot/shelbin/act_003 ~/.cache/huggingface/lerobot/shelbin/act_004 ~/.cache/huggingface/lerobot/shelbin/act_005  --output ~/.cache/huggingface/lerobot/shelbin/act_12345
+python lerobot/scripts/merge.py --max_dim 32 --sources ~/.cache/huggingface/lerobot/shelbin/act_001 ~/.cache/huggingface/lerobot/shelbin/act_002 ~/.cache/huggingface/lerobot/shelbin/act_003 ~/.cache/huggingface/lerobot/shelbin/act_004 ~/.cache/huggingface/lerobot/shelbin/act_005 ~/.cache/huggingface/lerobot/shelbin/act_006 ~/.cache/huggingface/lerobot/shelbin/act_007 ~/.cache/huggingface/lerobot/shelbin/act_008 ~/.cache/huggingface/lerobot/shelbin/act_009 --output ~/.cache/huggingface/lerobot/shelbin/act10_32
 
 # box_002/box_005/box_006box_007
 
 # record task
+# act_007
 python lerobot/scripts/control_robot.py \
   --robot.type=so100 \
   --control.type=record \
   --control.fps=30 \
   --control.single_task="Pick up the block and place it on the plate." \
-  --control.repo_id=${HF_USER}/act_008 \
-  --control.tags='["act_001"]' \
-  --control.warmup_time_s=5 \
-  --control.episode_time_s=60 \
-  --control.reset_time_s=5 \
+  --control.repo_id=${HF_USER}/bluebox \
+  --control.warmup_time_s=3 \
+  --control.episode_time_s=30 \
+  --control.reset_time_s=3 \
   --control.num_episodes=20 \
-  --control.push_to_hub=false 
+  --control.push_to_hub=false \
+  --control.resume=true
 
 # 接着这个数据集继续采
   --control.resume=true
@@ -43,30 +40,19 @@ python lerobot/scripts/control_robot.py \
 # visualize
 # ~/.cache/huggingface/lerobot/shelbin/
 python lerobot/scripts/visualize_dataset_html.py \
-  --repo-id ${HF_USER}/box_002
+  --repo-id ${HF_USER}/bluebox
 
-
-# train
-nohup python lerobot/scripts/train.py \
-  --dataset.repo_id=${HF_USER}/box_002 \
-  --policy.type=act \
-  --output_dir=/root/autodl-fs/models/box_002_pi0 \
-  --job_name=act \
-  --policy.device=cuda \
-  --wandb.enable=true \
-  --dataset.image_transforms.enable=true
-  > /root/autodl-fs/models/pi0_box_002/train.log 2>&1 &
   
 
 # local train 
-nohup python lerobot/scripts/train.py \
---dataset.repo_id=${HF_USER}/act_12345 \
+python lerobot/scripts/train.py \
+--dataset.repo_id=${HF_USER}/bluebox \
 --policy.type=act \
---output_dir=~/.cache/huggingface/lerobot/models/act_01 \
---job_name=act \
+--output_dir=./models/bluebox \
+--job_name=bluebox \
 --policy.device=cuda \
 --wandb.enable=true \
---dataset.image_transforms.enable=true > ./act_train.log 2>&1 &
+--dataset.image_transforms.enable=true
 
 
 
@@ -75,15 +61,14 @@ python lerobot/scripts/control_robot.py \
   --robot.type=so100 \
   --control.type=record \
   --control.fps=30 \
-  --control.single_task="Pick up the blocks and place them on the plate." \
-  --control.repo_id=${HF_USER}/eval_box_002_07 \
-  --control.tags='["pi0fast"]' \
+  --control.single_task="Pick up the block and place it on the plate." \
+  --control.repo_id=${HF_USER}/eval_bluebox \
   --control.warmup_time_s=5 \
   --control.episode_time_s=30 \
-  --control.reset_time_s=10 \
-  --control.num_episodes=10 \
+  --control.reset_time_s=5 \
+  --control.num_episodes=50 \
   --control.push_to_hub=false \
-  --control.policy.path=/media/yons/843b68f6-dfaf-466a-871e-769728918988/models/act_box_002/checkpoints/100000/pretrained_model/
+  --control.policy.path=./models/bluebox/checkpoints/100000/pretrained_model
 
 
 
@@ -91,7 +76,7 @@ python lerobot/scripts/control_robot.py \
   --robot.type=so100 
   --control.type=record 
   --control.fps=30 
-  --control.single_task="Pick up the blocks and place them on the plate." 
+  --control.single_task="Pick up the block and place it on the plate." 
   --control.repo_id=${HF_USER}/eval_box_002_07
   --control.warmup_time_s=5 
   --control.episode_time_s=30 
@@ -177,3 +162,8 @@ python lerobot/scripts/control_robot.py \
   --control.reset_time_s=5 \
   --control.num_episodes=20 \
   --control.push_to_hub=false 
+
+
+
+
+

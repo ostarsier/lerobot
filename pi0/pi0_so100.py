@@ -184,7 +184,7 @@ class pi0InferenceClient:
         self,
         host="0.0.0.0",
         port=8000,
-        language_instruction="Pick up the blocks and place them on the plate.",
+        language_instruction="Pick up the block and place it on the plate.",
     ):
         self.language_instruction = language_instruction
         # 480, 640
@@ -237,7 +237,7 @@ if __name__ == "__main__":
     client = pi0InferenceClient(
         host=args.host,
         port=args.port,
-        language_instruction="Pick up the blocks and place them on the plate.",
+        language_instruction="Pick up the block and place it on the plate.",
     )
 
     robot = SO100Robot(calibrate=False, enable_camera=True, camera_index=args.camera_index)

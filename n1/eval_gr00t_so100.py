@@ -269,7 +269,7 @@ if __name__ == "__main__":
     parser.add_argument("--host", type=str, default="localhost")
     parser.add_argument("--port", type=int, default=5555)
     parser.add_argument("--action_horizon", type=int, default=16)
-    parser.add_argument("--actions_to_execute", type=int, default=350)
+    parser.add_argument("--actions_to_execute", type=int, default=350000)
     parser.add_argument("--camera_index", type=int, default=0)
     args = parser.parse_args()
     args.use_policy = True

@@ -3,7 +3,7 @@ ybwIqZbQoO19
 
 
 # merge
-python lerobot/scripts/merge.py --max_dim 32 --sources ~/.cache/huggingface/lerobot/shelbin/act_001 ~/.cache/huggingface/lerobot/shelbin/act_002 ~/.cache/huggingface/lerobot/shelbin/act_003 ~/.cache/huggingface/lerobot/shelbin/act_004 ~/.cache/huggingface/lerobot/shelbin/act_005 ~/.cache/huggingface/lerobot/shelbin/act_006 ~/.cache/huggingface/lerobot/shelbin/act_007 ~/.cache/huggingface/lerobot/shelbin/act_008 ~/.cache/huggingface/lerobot/shelbin/act_009 --output ~/.cache/huggingface/lerobot/shelbin/act10_32
+python lerobot/scripts/merge.py --max_dim 32 --sources /home/yons/media/.cache/huggingface/lerobot/shelbin/act10_32 /home/yons/media/.cache/huggingface/lerobot/shelbin/box_01 --output /home/yons/media/.cache/huggingface/lerobot/shelbin/all
 
 # box_002/box_005/box_006box_007
 
@@ -40,7 +40,7 @@ python lerobot/scripts/control_robot.py \
 # visualize
 # ~/.cache/huggingface/lerobot/shelbin/
 python lerobot/scripts/visualize_dataset_html.py \
-  --repo-id ${HF_USER}/bluebox
+  --repo-id ${HF_USER}/all2
 
   
 

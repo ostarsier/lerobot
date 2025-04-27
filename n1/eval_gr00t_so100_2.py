@@ -278,7 +278,7 @@ if __name__ == "__main__":
     parser.add_argument("--host", type=str, default="localhost")
     parser.add_argument("--port", type=int, default=5555)
     parser.add_argument("--action_horizon", type=int, default=16)
-    parser.add_argument("--actions_to_execute", type=int, default=350)
+    parser.add_argument("--actions_to_execute", type=int, default=350000000000)
     parser.add_argument("--camera_index", type=int, default=0)
     args = parser.parse_args()
     args.use_policy = True
@@ -294,7 +294,7 @@ if __name__ == "__main__":
         client = Gr00tRobotInferenceClient(
             host=args.host,
             port=args.port,
-            language_instruction="Pick up the block and place it on the plate.",
+            language_instruction="Pick up the blocks and place them on the plate.",
         )
 
         robot = SO100Robot(calibrate=False, enable_camera=True, camera_index=args.camera_index)

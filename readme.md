@@ -9,18 +9,18 @@ python lerobot/scripts/merge.py --max_dim 32 --sources /home/yons/media/.cache/h
 
 # record task
 # act_007
-python lerobot/scripts/control_robot.py \
-  --robot.type=so100 \
-  --control.type=record \
-  --control.fps=30 \
-  --control.single_task="Pick up the block and place it on the plate." \
-  --control.repo_id=${HF_USER}/bluebox \
-  --control.warmup_time_s=3 \
-  --control.episode_time_s=30 \
-  --control.reset_time_s=3 \
-  --control.num_episodes=20 \
-  --control.push_to_hub=false \
-  --control.resume=true
+    python lerobot/scripts/control_robot.py \
+      --robot.type=so100 \
+      --control.type=record \
+      --control.fps=30 \
+      --control.single_task="Pick up the block and place it on the plate." \
+      --control.repo_id=${HF_USER}/bluebox \
+      --control.warmup_time_s=3 \
+      --control.episode_time_s=30 \
+      --control.reset_time_s=3 \
+      --control.num_episodes=20 \
+      --control.push_to_hub=false \
+      --control.resume=true
 
 # 接着这个数据集继续采
   --control.resume=true

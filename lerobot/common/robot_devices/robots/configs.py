@@ -705,17 +705,6 @@ class So100DoubleRobotConfig(ManipulatorRobotConfig):
 
     follower_arms: dict[str, MotorsBusConfig] = field(
         default_factory=lambda: {
-            "left": FeetechMotorsBusConfig(
-                port="/dev/lerobot_left",
-                motors={
-                    # name: (index, model)
-                    "shoulder_pan": [1, "sts3215"],
-                    "shoulder_lift": [2, "sts3215"],
-                    "elbow_flex": [3, "sts3215"],
-                    "wrist_flex": [4, "sts3215"],
-                    "wrist_roll": [5, "sts3215"],
-                },
-            ),
             "right": FeetechMotorsBusConfig(
                 port="/dev/lerobot_right",
                 motors={
@@ -726,6 +715,17 @@ class So100DoubleRobotConfig(ManipulatorRobotConfig):
                     "wrist_flex": [4, "sts3215"],
                     "wrist_roll": [5, "sts3215"],
                     "gripper": [6, "sts3215"],
+                },
+            ),
+            "left": FeetechMotorsBusConfig(
+                port="/dev/lerobot_left",
+                motors={
+                    # name: (index, model)
+                    "shoulder_pan": [1, "sts3215"],
+                    "shoulder_lift": [2, "sts3215"],
+                    "elbow_flex": [3, "sts3215"],
+                    "wrist_flex": [4, "sts3215"],
+                    "wrist_roll": [5, "sts3215"],
                 },
             ),
         }

@@ -119,27 +119,6 @@ class SO100Robot:
             self.robot.follower_arms[name].write("Maximum_Acceleration", 254)
             self.robot.follower_arms[name].write("Acceleration", 254)
 
-    def move_to_initial_pose(self):
-        current_state = self.robot.capture_observation()["observation.state"]
-        print("current_state", current_state)
-        # print all keys of the observation
-        print("observation keys:", self.robot.capture_observation().keys())
-
-        current_state[0] = 90
-        current_state[2] = 90
-        current_state[3] = 90
-        self.robot.send_action(current_state)
-        time.sleep(2)
-
-        current_state[4] = -70
-        current_state[5] = 30
-        current_state[1] = 90
-        self.robot.send_action(current_state)
-        time.sleep(2)
-
-        print("----------------> SO100 Robot moved to initial pose")
-
-
     def get_observation(self):
         return self.robot.capture_observation()
 
@@ -224,10 +203,7 @@ if __name__ == "__main__":
     import argparse
     import os
 
-    default_dataset_path = os.path.expanduser("/media/yons/843b68f6-dfaf-466a-871e-769728918988/datasets/so100_strawberry_grape")
-
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_path", type=str, default=default_dataset_path)
     parser.add_argument("--host", type=str, default="localhost")
     parser.add_argument("--port", type=int, default=5555)
     parser.add_argument("--action_horizon", type=int, default=16)
@@ -254,6 +230,7 @@ if __name__ == "__main__":
             img = robot.get_current_img()
             view_img(img)
             state = robot.get_current_state()
+            print(f'state {state}')
             action = client.get_action(img, state)
             start_time = time.time()
             for i in range(ACTION_HORIZON):
@@ -263,8 +240,7 @@ if __name__ == "__main__":
                 )
                 assert concat_action.shape == (11,), concat_action.shape
                 robot.set_target_state(torch.from_numpy(concat_action))
-                time.sleep(0.01)
-
+                print(f'send action {i} to robot {concat_action}')
                 # get the realtime image
                 img = robot.get_current_img()
                 view_img(img)

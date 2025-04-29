@@ -536,12 +536,8 @@ class ManipulatorRobot:
         follower_pos = {}
         for name in self.follower_arms:
             before_fread_t = time.perf_counter()
-            try:
-                follower_pos[name] = self.follower_arms[name].read("Present_Position")
-            except Exception as e:
-                time.sleep(2)
-                follower_pos[name] = self.follower_arms[name].read("Present_Position")
-            print(f"{name}: {follower_pos[name]}")
+            follower_pos[name] = self.follower_arms[name].read("Present_Position")
+            print(f"read>>>{name}: {follower_pos[name]}")
             follower_pos[name] = torch.from_numpy(follower_pos[name])
             self.logs[f"read_follower_{name}_pos_dt_s"] = time.perf_counter() - before_fread_t
 

@@ -1,6 +1,7 @@
 ssh -p 50673 root@connect.bjc1.seetacloud.com
 ybwIqZbQoO19
 
+conda activate lerobot
 
 # merge
 python lerobot/scripts/merge.py --max_dim 32 --sources /home/yons/media/.cache/huggingface/lerobot/shelbin/act10_32 /home/yons/media/.cache/huggingface/lerobot/shelbin/box_01 --output /home/yons/media/.cache/huggingface/lerobot/shelbin/all
@@ -14,13 +15,13 @@ python lerobot/scripts/control_robot.py \
   --control.type=record \
   --control.fps=30 \
   --control.single_task="Pick up the block and place it on the plate." \
-  --control.repo_id=${HF_USER}/bluebox \
+  --control.repo_id=task/demo2 \
   --control.warmup_time_s=3 \
   --control.episode_time_s=30 \
   --control.reset_time_s=3 \
   --control.num_episodes=20 \
   --control.push_to_hub=false \
-  --control.resume=true
+  --control.resume=false
 # box_008
 
 # 接着这个数据集继续采
@@ -41,7 +42,7 @@ python lerobot/scripts/control_robot.py \
 # visualize
 # ~/.cache/huggingface/lerobot/shelbin/
 python lerobot/scripts/visualize_dataset_html.py \
-  --repo-id ${HF_USER}/all2
+  --repo-id task/move_two_boxes_double
 
   
 
@@ -165,6 +166,25 @@ python lerobot/scripts/control_robot.py \
   --control.push_to_hub=false 
 
 
+n1 infer
+python lerobot/scripts/control_robot.py \
+  --robot.type=follow_jetbot \
+  --control.type=record \
+  --control.fps=30 \
+  --control.single_task="Pick up the green block and place it on the green area." \
+  --control.repo_id=cjd/jetbot_green_box_001 \
+  --control.warmup_time_s=5 \
+  --control.episode_time_s=60 \
+  --control.reset_time_s=5 \
+  --control.num_episodes=20 \
+  --control.push_to_hub=false
+
+---
+build onnx source code
+
+./build.sh --config Release --build_shared_lib --parallel --cmake_extra_defines "CMAKE_X86_64_ARCHITECTURE=x86-64" "CMAKE_X86_64_TARGET_MICROARCHITECTURE=x86-64"
 
 
 
+
+python -m lerobot.calibrate --robot.type=so100_follower --robot.port=/dev/ttyACM0 --robot.id=my_awesome_follower_arm

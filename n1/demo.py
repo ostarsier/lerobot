@@ -63,7 +63,7 @@ class SO100Robot:
 
         # Create the robot
         self.robot = make_robot_from_config(self.config)
-        self.motor_bus = self.robot.leader_arms["main"]
+        self.motor_bus = self.robot.follower_arms["main"]
 
     @contextmanager
     def activate(self):

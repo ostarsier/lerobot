@@ -564,12 +564,24 @@ class FeetechMotorsBus:
                     factor = math.ceil(low_factor)
 
                     if factor > upp_factor:
-                        raise ValueError(f"No integer found between bounds [{low_factor=}, {upp_factor=}]")
+                        # No integer found, try to get closest integer
+                        if abs(low_factor - round(low_factor)) < abs(upp_factor - round(upp_factor)):
+                            factor = round(low_factor)
+                        else:
+                            factor = round(upp_factor)
+                        if factor > upp_factor or factor < low_factor:
+                            raise ValueError(f"No integer found between bounds [{low_factor=}, {upp_factor=}]")
                 else:
                     factor = math.ceil(upp_factor)
 
                     if factor > low_factor:
-                        raise ValueError(f"No integer found between bounds [{low_factor=}, {upp_factor=}]")
+                        # No integer found, try to get closest integer
+                        if abs(upp_factor - round(upp_factor)) < abs(low_factor - round(low_factor)):
+                            factor = round(upp_factor)
+                        else:
+                            factor = round(low_factor)
+                        if factor > low_factor or factor < upp_factor:
+                            raise ValueError(f"No integer found between bounds [{low_factor=}, {upp_factor=}]")
 
                 if CalibrationMode[calib_mode] == CalibrationMode.DEGREE:
                     out_of_range_str = f"{LOWER_BOUND_DEGREE} < {calib_val} < {UPPER_BOUND_DEGREE} degrees"

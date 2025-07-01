@@ -50,7 +50,6 @@ class SO100Robot:
             self.config.cameras = {}
         else:
             self.config.cameras = {"webcam": OpenCVCameraConfig(camera_index, 30, 640, 480, "bgr")}
-        self.config.leader_arms = {}
 
         # remove the .cache/calibration/so100 folder
         if self.calibrate:
@@ -64,7 +63,7 @@ class SO100Robot:
 
         # Create the robot
         self.robot = make_robot_from_config(self.config)
-        self.motor_bus = self.robot.follower_arms["main"]
+        self.motor_bus = self.robot.leader_arms["main"]
 
     @contextmanager
     def activate(self):
@@ -140,33 +139,6 @@ class SO100Robot:
         # - 这将使电机运动更快速
         self.motor_bus.write("Acceleration", 254)
 
-    def move_to_initial_pose(self):
-        current_state = self.robot.capture_observation()["observation.state"]
-        print("current_state", current_state)
-        # print all keys of the observation
-        print("observation keys:", self.robot.capture_observation().keys())
-
-        current_state[0] = 90
-        current_state[2] = 90
-        current_state[3] = 90
-        self.robot.send_action(current_state)
-        time.sleep(2)
-
-        current_state[4] = -70
-        current_state[5] = 30
-        current_state[1] = 90
-        self.robot.send_action(current_state)
-        time.sleep(2)
-
-        print("----------------> SO100 Robot moved to initial pose")
-
-    def go_home(self):
-        # [ 88.0664, 156.7090, 135.6152,  83.7598, -89.1211,  16.5107]
-        print("----------------> SO100 Robot moved to home pose")
-        home_state = torch.tensor([88.0664, 156.7090, 135.6152, 83.7598, -89.1211, 16.5107])
-        self.set_target_state(home_state)
-        time.sleep(2)
-
     def get_observation(self):
         return self.robot.capture_observation()
 
@@ -200,8 +172,9 @@ if __name__ == "__main__":
        
         robot = SO100Robot(calibrate=False, enable_camera=False)
         with robot.activate():
-            home_state = torch.tensor([0, -34, -89, 44, -0, 0])
-            # robot.set_target_state(home_state)
+            home_state = torch.tensor([0, 0, 0, 0, 0, 0])
+            robot.set_target_state(home_state)
+            time.sleep(2)
             print("current state:", robot.get_current_state())
             
 

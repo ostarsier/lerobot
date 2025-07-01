@@ -5,7 +5,7 @@ from lerobot.common.robot_devices.motors.feetech import FeetechMotorsBus
 def main():
 
     config = FeetechMotorsBusConfig(
-                port="/dev/ttyACM0",
+                port="/dev/ttyACM1",
                 motors={
                     # name: (index, model)
                     "shoulder_pan": [1, "sts3215"],
@@ -16,7 +16,7 @@ def main():
                     "gripper": [6, "sts3215"],
                 },
             )
-
+# Present_Position_shoulder_pan_shoulder_lift_elbow_flex_wrist_flex_wrist_roll_gripper
     motors_bus = FeetechMotorsBus(config)
     motors_bus.connect()
 

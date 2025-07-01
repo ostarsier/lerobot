@@ -465,7 +465,7 @@ class So100RobotConfig(ManipulatorRobotConfig):
     follower_arms: dict[str, MotorsBusConfig] = field(
         default_factory=lambda: {
             "main": FeetechMotorsBusConfig(
-                port="/dev/ttyACM0",
+                port="/dev/ttyACM1",
                 motors={
                     # name: (index, model)
                     "shoulder_pan": [1, "sts3215"],
@@ -479,22 +479,22 @@ class So100RobotConfig(ManipulatorRobotConfig):
         }
     )
 
-    cameras: dict[str, CameraConfig] = field(
-        default_factory=lambda: {
-            "top": OpenCVCameraConfig(
-                camera_index=0,
-                fps=30,
-                width=640,
-                height=480,
-            ),
-            "arm": OpenCVCameraConfig(
-                camera_index=2,
-                fps=30,
-                width=640,
-                height=480,
-            ),
-        }
-    )
+    # cameras: dict[str, CameraConfig] = field(
+    #     default_factory=lambda: {
+    #         "top": OpenCVCameraConfig(
+    #             camera_index=0,
+    #             fps=30,
+    #             width=640,
+    #             height=480,
+    #         ),
+    #         "arm": OpenCVCameraConfig(
+    #             camera_index=2,
+    #             fps=30,
+    #             width=640,
+    #             height=480,
+    #         ),
+    #     }
+    # )
 
     mock: bool = False
 

@@ -154,7 +154,7 @@ export PKG_CONFIG_PATH="/media/yons/843b68f6-dfaf-466a-871e-769728918988/conda_e
 
 
 python lerobot/scripts/control_robot.py \
-  --robot.type=shelbin \
+  --robot.type=so100 \
   --control.type=record \
   --control.fps=30 \
   --control.single_task="Pick up the block and place it on the plate." \
@@ -185,6 +185,10 @@ build onnx source code
 ./build.sh --config Release --build_shared_lib --parallel --cmake_extra_defines "CMAKE_X86_64_ARCHITECTURE=x86-64" "CMAKE_X86_64_TARGET_MICROARCHITECTURE=x86-64"
 
 
+---
 
-
-python -m lerobot.calibrate --robot.type=so100_follower --robot.port=/dev/ttyACM0 --robot.id=my_awesome_follower_arm
+python lerobot/scripts/control_robot.py \
+  --robot.type=so100 \
+  --robot.cameras='{}' \
+  --control.type=calibrate \
+  --control.arms='["main_leader"]'
